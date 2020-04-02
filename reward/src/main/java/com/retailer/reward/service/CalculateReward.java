@@ -1,6 +1,7 @@
 package com.retailer.reward.service;
 
 import com.retailer.reward.model.*;
+import com.retailer.reward.service.constant.RewardConstant;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -19,7 +20,7 @@ public class CalculateReward {
     private RewardResponse getResponse(List<Customer> customers) {
         RewardResponse rewardResponse = new RewardResponse();
 
-         rewardResponse.setRewardList(customers.stream()
+        rewardResponse.setRewardList(customers.stream()
                 .map(customer -> generateReward(customer))
                 .collect(Collectors.toList()));
 
@@ -61,23 +62,27 @@ public class CalculateReward {
     private int getRewardPoint(BigDecimal transactionAmount) {
         int rewardPoint = 0;
 
-        if (transactionAmount.compareTo(BigDecimal.valueOf(100)) > 0) {
-            rewardPoint = rewardPointMoreThanHundredTransaction(transactionAmount);
+        if (transactionAmount.compareTo(BigDecimal.valueOf(RewardConstant.MAX_POINT_REWARD_AMOUNT)) > 0) {
+            rewardPoint = getRewardPointForMaxPointTransactionAmount(transactionAmount);
         }
 
-        if (transactionAmount.compareTo(BigDecimal.valueOf(50)) > 0 && transactionAmount.compareTo(BigDecimal.valueOf(100)) < 0) {
-            rewardPoint = rewardPointMoreFiftyTransaction(transactionAmount);
+        if (transactionAmount.compareTo(BigDecimal.valueOf(RewardConstant.MIN_POINT_REWARD_AMOUNT)) > 0
+                && transactionAmount.compareTo(BigDecimal.valueOf(RewardConstant.MAX_POINT_REWARD_AMOUNT)) < 0) {
+            rewardPoint = getRewardPointForMinPointTransactionAmount(transactionAmount);
         }
 
         return rewardPoint;
     }
 
-    private int rewardPointMoreThanHundredTransaction(BigDecimal transactionAmount) {
-        return rewardPointMoreFiftyTransaction(transactionAmount) + (transactionAmount.intValue() - 100) * 2;
+    private int getRewardPointForMaxPointTransactionAmount(BigDecimal transactionAmount) {
+        return getRewardPointForMinPointTransactionAmount(BigDecimal.valueOf(RewardConstant.MAX_POINT_REWARD_AMOUNT))
+                + (transactionAmount.intValue() - RewardConstant.MAX_POINT_REWARD_AMOUNT)
+                * RewardConstant.MAX_POINT;
     }
 
-    private int rewardPointMoreFiftyTransaction(BigDecimal transactionAmount) {
-        return transactionAmount.intValue() - 50;
+    private int getRewardPointForMinPointTransactionAmount(BigDecimal transactionAmount) {
+        return (transactionAmount.intValue() - RewardConstant.MIN_POINT_REWARD_AMOUNT)
+                * RewardConstant.MIN_POINT;
     }
 
     private List<MonthlyReward> calculateMonthlyRewardPoint(List<Transaction> transactionList) {
@@ -95,7 +100,8 @@ public class CalculateReward {
 
                 for (Transaction tr1 : transactionList) {
 
-                    if (tr.getTransactionDate().getMonth() == tr1.getTransactionDate().getMonth() && tr.getTransactionDate().getYear() == tr1.getTransactionDate().getYear()) {
+                    if (tr.getTransactionDate().getMonth() == tr1.getTransactionDate().getMonth()
+                            && tr.getTransactionDate().getYear() == tr1.getTransactionDate().getYear()) {
                         oneMonthTransactionAmount = oneMonthTransactionAmount.add(tr1.getTransactionAmount());
                     }
                 }
@@ -129,9 +135,9 @@ public class CalculateReward {
         Period diff = Period.between(maxDate, minDate);
 
         return diff.getMonths() > 3;
-    }
+    }*/
 
-    private List<LocalDate> getTransactionDates(List<Transaction> transactionList) {
+/*    private List<LocalDate> getTransactionDates(List<Transaction> transactionList) {
         return transactionList.stream()
                 .map(transaction -> transaction.getTransactionDate())
                 .collect(Collectors.toList());
