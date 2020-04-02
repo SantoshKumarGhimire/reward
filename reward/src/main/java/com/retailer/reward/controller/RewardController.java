@@ -18,6 +18,6 @@ public class RewardController {
     @PostMapping("/calculateReward")
     public RewardResponse getRewardRequest(@RequestBody RewardRequest rewardRequest) {
 
-        return calculateReward.calculateReward(rewardRequest);
+        return calculateReward.runActionWithResult(rewardRequest);
     }
 }

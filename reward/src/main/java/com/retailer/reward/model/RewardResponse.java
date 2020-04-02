@@ -3,13 +3,13 @@ package com.retailer.reward.model;
 import java.util.List;
 
 public class RewardResponse {
-    List<Customer> customers;
+    private List<Reward> rewardList;
 
-    public List<Customer> getCustomers() {
-        return customers;
+    public List<Reward> getRewardList() {
+        return rewardList;
     }
 
-    public void setCustomers(List<Customer> customers) {
-        this.customers = customers;
+    public void setRewardList(List<Reward> rewardList) {
+        this.rewardList = rewardList;
     }
 }

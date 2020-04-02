@@ -12,10 +12,6 @@ public class Customer {
     private String customerPhone;
     private String customerEmail;
 
-    private int totalRewardPoint;
-
-    private List<MonthlyReward> monthlyReward;
-
     private List<Transaction> transactionList;
 
     public UUID getCustomerId() {
@@ -56,22 +52,6 @@ public class Customer {
 
     public void setCustomerEmail(String customerEmail) {
         this.customerEmail = customerEmail;
-    }
-
-    public int getTotalRewardPoint() {
-        return totalRewardPoint;
-    }
-
-    public void setTotalRewardPoint(int totalRewardPoint) {
-        this.totalRewardPoint = totalRewardPoint;
-    }
-
-    public List<MonthlyReward> getMonthlyReward() {
-        return monthlyReward;
-    }
-
-    public void setMonthlyReward(List<MonthlyReward> monthlyReward) {
-        this.monthlyReward = monthlyReward;
     }
 
     public List<Transaction> getTransactionList() {

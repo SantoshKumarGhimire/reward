@@ -5,23 +5,45 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class CalculateReward {
 
-    public RewardResponse calculateReward(RewardRequest rewardRequest) {
+    public RewardResponse runActionWithResult(RewardRequest rewardRequest) {
         List<Customer> customers = rewardRequest.getCustomers();
 
+        return getResponse(customers);
+    }
+
+    private RewardResponse getResponse(List<Customer> customers) {
         RewardResponse rewardResponse = new RewardResponse();
 
-        customers.stream().forEach(customer -> {
-            customer.setTotalRewardPoint(calculateTotalRewardPoint(customer.getTransactionList()));
-            customer.setMonthlyReward(calculateMonthlyRewardPoint(customer.getTransactionList()));
-        });
-
-        rewardResponse.setCustomers(customers);
+         rewardResponse.setRewardList(customers.stream()
+                .map(customer -> generateReward(customer))
+                .collect(Collectors.toList()));
 
         return rewardResponse;
+    }
+
+    private Reward generateReward(Customer customer) {
+        Reward reward = new Reward();
+
+        reward.setCustomer(getCustomerProperties(customer));
+        reward.setTotalRewardPoint(calculateTotalRewardPoint(customer.getTransactionList()));
+        reward.setMonthlyReward(calculateMonthlyRewardPoint(customer.getTransactionList()));
+
+        return reward;
+    }
+
+    private Customer getCustomerProperties(Customer customer) {
+        Customer customerWithReward = new Customer();
+
+        customerWithReward.setCustomerName(customer.getCustomerName());
+        customerWithReward.setCustomerEmail(customer.getCustomerEmail());
+        customerWithReward.setCustomerPhone(customer.getCustomerPhone());
+
+        return customerWithReward;
     }
 
     private int calculateTotalRewardPoint(List<Transaction> transactionList) {
@@ -36,17 +58,26 @@ public class CalculateReward {
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
-    private int getRewardPoint(BigDecimal totalTransactionAmount) {
-        int totalRewardPoint = 0;
+    private int getRewardPoint(BigDecimal transactionAmount) {
+        int rewardPoint = 0;
 
-        if (totalTransactionAmount.compareTo(BigDecimal.valueOf(100)) == 1) {
-            totalRewardPoint = 50 + (totalTransactionAmount.intValue() - 100) * 2;
-        }
-        if (totalTransactionAmount.compareTo(BigDecimal.valueOf(50)) == 1 && totalTransactionAmount.compareTo(BigDecimal.valueOf(100)) == -1) {
-            totalRewardPoint = (totalTransactionAmount.intValue() - 50) * 1;
+        if (transactionAmount.compareTo(BigDecimal.valueOf(100)) > 0) {
+            rewardPoint = rewardPointMoreThanHundredTransaction(transactionAmount);
         }
 
-        return totalRewardPoint;
+        if (transactionAmount.compareTo(BigDecimal.valueOf(50)) > 0 && transactionAmount.compareTo(BigDecimal.valueOf(100)) < 0) {
+            rewardPoint = rewardPointMoreFiftyTransaction(transactionAmount);
+        }
+
+        return rewardPoint;
+    }
+
+    private int rewardPointMoreThanHundredTransaction(BigDecimal transactionAmount) {
+        return rewardPointMoreFiftyTransaction(transactionAmount) + (transactionAmount.intValue() - 100) * 2;
+    }
+
+    private int rewardPointMoreFiftyTransaction(BigDecimal transactionAmount) {
+        return transactionAmount.intValue() - 50;
     }
 
     private List<MonthlyReward> calculateMonthlyRewardPoint(List<Transaction> transactionList) {
