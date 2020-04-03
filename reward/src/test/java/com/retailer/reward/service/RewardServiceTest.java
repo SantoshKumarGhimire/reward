@@ -30,11 +30,10 @@ public class RewardServiceTest {
 
     @Test
     public void calculateReward_totalReward() throws CustomerNotFoundException {
-        int customerId = 1;
 
-        Mockito.when(rewardRepository.getCustomerByCustomerId(customerId)).thenReturn(getCustomer());
+        Mockito.when(rewardRepository.getCustomerByCustomerId(1)).thenReturn(getCustomer());
 
-        Mockito.when(rewardRepository.findAllTransactionByCustomerId(customerId)).thenReturn(getTransactionList());
+        Mockito.when(rewardRepository.findAllTransactionByCustomerId(1)).thenReturn(getTransactionList());
 
         Reward reward = rewardService.calculateReward(1);
 
@@ -43,11 +42,9 @@ public class RewardServiceTest {
 
     @Test
     public void calculateReward_monthlyReward() throws CustomerNotFoundException {
-        int customerId = 1;
+        Mockito.when(rewardRepository.getCustomerByCustomerId(1)).thenReturn(getCustomer());
 
-        Mockito.when(rewardRepository.getCustomerByCustomerId(customerId)).thenReturn(getCustomer());
-
-        Mockito.when(rewardRepository.findAllTransactionByCustomerId(customerId)).thenReturn(getTransactionList());
+        Mockito.when(rewardRepository.findAllTransactionByCustomerId(1)).thenReturn(getTransactionList());
 
         Reward reward = rewardService.calculateReward(1);
 
@@ -67,7 +64,6 @@ public class RewardServiceTest {
 
             throw exception;
         }
-
     }
 
     private Customer getCustomer() {
