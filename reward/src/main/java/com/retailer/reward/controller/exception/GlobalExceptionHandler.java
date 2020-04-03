@@ -32,7 +32,7 @@ public class GlobalExceptionHandler {
             HttpStatus status = HttpStatus.NOT_FOUND;
             CustomerNotFoundException customerNotFoundException = (CustomerNotFoundException) ex;
 
-            return handleUserNotFoundException(customerNotFoundException, headers, status, request);
+            return handleCustomerNotFoundException(customerNotFoundException, headers, status, request);
         } else {
             if (LOGGER.isWarnEnabled()) {
                 LOGGER.warn("Unknown exception type: " + ex.getClass().getName());
@@ -43,7 +43,7 @@ public class GlobalExceptionHandler {
         }
     }
 
-    protected ResponseEntity<ApiError> handleUserNotFoundException(CustomerNotFoundException ex,
+    protected ResponseEntity<ApiError> handleCustomerNotFoundException(CustomerNotFoundException ex,
                                                                    HttpHeaders headers, HttpStatus status,
                                                                    WebRequest request) {
         List<String> errors = Collections.singletonList(ex.getMessage());
