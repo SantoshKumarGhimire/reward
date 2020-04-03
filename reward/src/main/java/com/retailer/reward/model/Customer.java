@@ -1,64 +1,59 @@
 package com.retailer.reward.model;
 
-import java.util.List;
-import java.util.UUID;
-
 public class Customer {
 
-    private UUID customerId;
+    private int id;
 
-    private String customerName;
-    private String customerAddress;
-    private String customerPhone;
-    private String customerEmail;
+    private String name;
+    private String phone;
+    private String email;
 
-    private List<Transaction> transactionList;
-
-    public UUID getCustomerId() {
-        return customerId;
+    public Customer(int id, String name, String phone, String email) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.email = email;
     }
 
-    public void setCustomerId(UUID customerId) {
-        this.customerId = customerId;
+    public int getId() {
+        return id;
     }
 
-    public String getCustomerName() {
-        return customerName;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setCustomerName(String customerName) {
-        this.customerName = customerName;
+    public String getName() {
+        return name;
     }
 
-    public String getCustomerAddress() {
-        return customerAddress;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public void setCustomerAddress(String customerAddress) {
-        this.customerAddress = customerAddress;
+    public String getPhone() {
+        return phone;
     }
 
-    public String getCustomerPhone() {
-        return customerPhone;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public void setCustomerPhone(String customerPhone) {
-        this.customerPhone = customerPhone;
+    public String getEmail() {
+        return email;
     }
 
-    public String getCustomerEmail() {
-        return customerEmail;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setCustomerEmail(String customerEmail) {
-        this.customerEmail = customerEmail;
-    }
-
-    public List<Transaction> getTransactionList() {
-        return transactionList;
-    }
-
-    public void setTransactionList(List<Transaction> transactionList) {
-        this.transactionList = transactionList;
+    @Override
+    public String toString() {
+        return "Customer{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

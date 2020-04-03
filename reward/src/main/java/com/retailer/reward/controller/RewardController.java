@@ -1,23 +1,20 @@
 package com.retailer.reward.controller;
 
-import com.retailer.reward.model.Customer;
-import com.retailer.reward.model.RewardRequest;
-import com.retailer.reward.model.RewardResponse;
-import com.retailer.reward.service.CalculateReward;
+import com.retailer.reward.model.Reward;
+import com.retailer.reward.service.RewardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class RewardController {
 
     @Autowired
-    CalculateReward calculateReward;
+    RewardService rewardService;
 
-    @PostMapping("/calculateReward")
-    public RewardResponse getRewardRequest(@RequestBody RewardRequest rewardRequest) {
-
-        return calculateReward.runActionWithResult(rewardRequest);
+    @GetMapping("/customer/{id}/reward")
+    public Reward getReward(@PathVariable("id") Integer customerId) {
+        return rewardService.calculateReward(customerId);
     }
 }

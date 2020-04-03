@@ -1,3 +1,4 @@
+/*
 package com.retailer.reward.service;
 
 import com.retailer.reward.model.*;
@@ -40,9 +41,9 @@ public class CalculateReward {
     private Customer getCustomerProperties(Customer customer) {
         Customer customerWithReward = new Customer();
 
-        customerWithReward.setCustomerName(customer.getCustomerName());
-        customerWithReward.setCustomerEmail(customer.getCustomerEmail());
-        customerWithReward.setCustomerPhone(customer.getCustomerPhone());
+        customerWithReward.setName(customer.getName());
+        customerWithReward.setEmail(customer.getEmail());
+        customerWithReward.setPhone(customer.getPhone());
 
         return customerWithReward;
     }
@@ -122,7 +123,8 @@ public class CalculateReward {
         return monthlyReward;
     }
 
-  /*  private boolean invalidRewardDate(List<LocalDate> dates) {
+  */
+/*  private boolean invalidRewardDate(List<LocalDate> dates) {
         LocalDate maxDate = dates.stream()
                 .max(Comparator.comparing(LocalDate::toEpochDay))
                 .get();
@@ -135,11 +137,15 @@ public class CalculateReward {
         Period diff = Period.between(maxDate, minDate);
 
         return diff.getMonths() > 3;
-    }*/
+    }*//*
 
+
+*/
 /*    private List<LocalDate> getTransactionDates(List<Transaction> transactionList) {
         return transactionList.stream()
                 .map(transaction -> transaction.getTransactionDate())
                 .collect(Collectors.toList());
-    }*/
+    }*//*
+
 }
+*/

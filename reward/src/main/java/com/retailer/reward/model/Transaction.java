@@ -2,19 +2,34 @@ package com.retailer.reward.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.UUID;
 
 public class Transaction {
-   private UUID transactionId;
-   private LocalDate transactionDate;
-   private BigDecimal transactionAmount;
+    private int transactionId;
+    private int customerId;
+    private LocalDate transactionDate;
+    private BigDecimal transactionAmount;
 
-    public UUID getTransactionId() {
+    public Transaction(int transactionId, int customerId, LocalDate transactionDate, BigDecimal transactionAmount) {
+        this.transactionId = transactionId;
+        this.customerId = customerId;
+        this.transactionDate = transactionDate;
+        this.transactionAmount = transactionAmount;
+    }
+
+    public int getTransactionId() {
         return transactionId;
     }
 
-    public void setTransactionId(UUID transactionId) {
+    public void setTransactionId(int transactionId) {
         this.transactionId = transactionId;
+    }
+
+    public int getCustomerId() {
+        return customerId;
+    }
+
+    public void setCustomerId(int customerId) {
+        this.customerId = customerId;
     }
 
     public LocalDate getTransactionDate() {
