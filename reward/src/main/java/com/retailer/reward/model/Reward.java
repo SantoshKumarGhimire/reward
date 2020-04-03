@@ -3,16 +3,16 @@ package com.retailer.reward.model;
 import java.util.List;
 
 public class Reward {
-    private int customerId;
+    private Customer customer;
     private int totalRewardPoint;
     private List<MonthlyReward> monthlyReward;
 
-    public int getCustomerId() {
-        return customerId;
+    public Customer getCustomer() {
+        return customer;
     }
 
-    public void setCustomerId(int customerId) {
-        this.customerId = customerId;
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
     }
 
     public int getTotalRewardPoint() {

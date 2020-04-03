@@ -1,5 +1,7 @@
 package com.retailer.reward.service;
 
+import com.retailer.reward.controller.exception.CustomerNotFoundException;
+import com.retailer.reward.model.Customer;
 import com.retailer.reward.model.MonthlyReward;
 import com.retailer.reward.model.Reward;
 import com.retailer.reward.model.Transaction;
@@ -9,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,19 +19,26 @@ public class RewardService {
     @Autowired
     RewardRepository rewardRepository;
 
-    public Reward calculateReward(int customerId) {
+    public Reward calculateReward(int customerId) throws CustomerNotFoundException {
+        Customer customer = rewardRepository.getCustomerByCustomerId(customerId);
+
+        if (Objects.isNull(customer)) {
+            throw CustomerNotFoundException.createWith(customerId);
+        }
 
         List<Transaction> transactionList = rewardRepository.findAllTransactionByCustomerId(customerId);
 
+        return prepareResponse(customer, transactionList);
+    }
+
+    private Reward prepareResponse(Customer customer, List<Transaction> transactionList) {
         List<MonthlyReward> monthlyReward = calculateMonthlyReward(transactionList);
 
-        int totalReward = monthlyReward.stream()
-                .map(MonthlyReward::getMonthlyRewardPoint)
-                .reduce(0, Integer::sum);
+        int totalReward = calculateTotalReward(monthlyReward);
 
         Reward reward = new Reward();
 
-        reward.setCustomerId(customerId);
+        reward.setCustomer(customer);
         reward.setMonthlyReward(monthlyReward);
         reward.setTotalRewardPoint(totalReward);
 
@@ -40,7 +46,17 @@ public class RewardService {
     }
 
     private List<MonthlyReward> calculateMonthlyReward(List<Transaction> transactionList) {
+        Map<String, List<Transaction>> transactionByMonth = getTransactionMapForEachMonth(transactionList);
 
+        List<MonthlyReward> monthlyRewardList = transactionByMonth.keySet()
+                .stream()
+                .map(month -> getMonthlyReward(transactionByMonth.get(month)))
+                .collect(Collectors.toList());
+
+        return monthlyRewardList;
+    }
+
+    private Map<String, List<Transaction>> getTransactionMapForEachMonth(List<Transaction> transactionList) {
         Map<String, List<Transaction>> transactionByMonth = new HashMap<>();
 
         for (Transaction transaction : transactionList) {
@@ -55,15 +71,7 @@ public class RewardService {
             }
         }
 
-        transactionByMonth.keySet()
-                .forEach(mo -> System.out.println(mo + " = " + transactionByMonth.get(mo).size()));
-
-        List<MonthlyReward> monthlyRewardList = transactionByMonth.keySet()
-                .stream()
-                .map(month -> getMonthlyReward(transactionByMonth.get(month)))
-                .collect(Collectors.toList());
-
-        return monthlyRewardList;
+        return transactionByMonth;
     }
 
     private MonthlyReward getMonthlyReward(List<Transaction> transactions) {
@@ -88,13 +96,19 @@ public class RewardService {
             BigDecimal pointForMaxAmount = (transactionAmount.subtract(RewardConstant.MAX_POINT_REWARD_AMOUNT)).multiply(RewardConstant.MAX_POINT);
 
             rewardPoint = pointForMinAmount.add(pointForMaxAmount).intValue();
-        }else if(transactionAmount.compareTo(RewardConstant.MIN_POINT_REWARD_AMOUNT) > 0){
-            BigDecimal amountForReward  = transactionAmount.subtract(RewardConstant.MIN_POINT_REWARD_AMOUNT);
+        } else if (transactionAmount.compareTo(RewardConstant.MIN_POINT_REWARD_AMOUNT) > 0) {
+            BigDecimal amountForReward = transactionAmount.subtract(RewardConstant.MIN_POINT_REWARD_AMOUNT);
             BigDecimal pointForMinAmount = amountForReward.multiply(RewardConstant.MIN_POINT);
 
             rewardPoint = pointForMinAmount.intValue();
         }
 
         return rewardPoint;
+    }
+
+    private int calculateTotalReward(List<MonthlyReward> monthlyReward) {
+        return monthlyReward.stream()
+                .map(MonthlyReward::getMonthlyRewardPoint)
+                .reduce(0, Integer::sum);
     }
 }

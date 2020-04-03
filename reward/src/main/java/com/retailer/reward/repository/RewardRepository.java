@@ -1,5 +1,6 @@
 package com.retailer.reward.repository;
 
+import com.retailer.reward.model.Customer;
 import com.retailer.reward.model.Transaction;
 import org.springframework.stereotype.Component;
 
@@ -14,5 +15,12 @@ public class RewardRepository {
                 .stream()
                 .filter(transaction -> transaction.getCustomerId() == customerId)
                 .collect(Collectors.toList());
+    }
+
+    public Customer getCustomerByCustomerId(int customerId) {
+        return Data.customerList
+                .stream().filter(customer -> customer.getId() == customerId)
+                .findFirst()
+                .orElse(null);
     }
 }
