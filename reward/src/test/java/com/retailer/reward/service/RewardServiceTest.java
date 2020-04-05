@@ -58,9 +58,9 @@ public class RewardServiceTest {
         try {
             Mockito.when(rewardRepository.getCustomerByCustomerId(1)).thenReturn(null);
 
-            Reward reward = rewardService.calculateReward(1);
+            rewardService.calculateReward(1);
         } catch (CustomerNotFoundException exception) {
-            Assertions.assertEquals(true, exception.getMessage().endsWith("CustomerId '" + 1 + "' not found"));
+            Assertions.assertTrue(exception.getMessage().endsWith("CustomerId '" + 1 + "' not found"));
 
             throw exception;
         }
